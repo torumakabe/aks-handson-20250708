@@ -6,50 +6,37 @@
 
 Azureアカウントを持っている場合は[0-2. テナントとサブスクリプションの確認](#0-2-テナントとサブスクリプションの確認) に進んでください。持っていない場合は、以下のページより無料アカウントとサブスクリプションを作成できます。
 
-参考: [Azure 無料アカウント作成](https://azure.microsoft.com/ja-jp/pricing/purchase-options/azure-account)
+> [Azure 無料アカウント作成](https://azure.microsoft.com/ja-jp/pricing/purchase-options/azure-account)
 
 無料アカウントとサブスクリプション作成の流れを事前に知りたい場合は、以下の記事を参考にしてください。公式ドキュメントではありませんが、マイクロソフト社員が利用者目線で平易に解説しています。
 
-参考: [無料の範囲で Microsoft Azure を試してみる - Qiita](https://qiita.com/so_nkbys/items/523a11dc4e2828e97506)
+> 参考: [無料の範囲で Microsoft Azure を試してみる - Qiita](https://qiita.com/so_nkbys/items/523a11dc4e2828e97506)
 
 ### 0-2. テナントとサブスクリプションの確認
 
 [Azure ポータル](https://portal.azure.com/)にログインし、テナントとサブスクリプションのIDをメモしてください。
 
-参考: [Azure ポータルでのサブスクリプション ID とテナント ID の取得](https://learn.microsoft.com/ja-jp/azure/azure-portal/get-subscription-tenant-id)
+> 参考: [Azure ポータルでのサブスクリプション ID とテナント ID の取得](https://learn.microsoft.com/ja-jp/azure/azure-portal/get-subscription-tenant-id)
 
 ### 0-3. Codespaceの起動
 
-[GitHub](https://github.com/)の左上のハンバーガーメニュー(三本線)から、`Codespaces`を選択します。
+このリポジトリのトップページ上部、緑色で目立つ`<> Code`ボタンを押すと、`Codespaces`タブが表示されます。そのタブを選択後、`Create codespace on main`ボタンを押してハンズオン用のCodespaceを作ります。作成に10分ほどかかります。
 
-![alt text](images/image-codespace1.png)
-
-
-`New codespace`をクリックします。
-
-![alt text](images/image-codespace2.png)
-
-
-`Repository`で
-
-TODO: リポジトリ名を確定後に更新
-```
-k8s-meetup-novice/aks-handson-20250708
-```
-
-を選択し、`Create codespace`をクリックします。環境の作成に10分ほどかかります。
+![alt text](images/image-codespace_create.png)
 
 ### 0-4. Azure CLIのログイン
 
-CodespaceのターミナルでAzure CLIのログインをします。ログイン時、接続するテナントとサブスクリプションを確認されますので、先ほどメモしたIDを選択、入力してください。
+CodespaceのターミナルでAzure CLIのログインをします。
 
 ```bash
 az login
 ```
 
+ログイン時、操作対象のテナントとサブスクリプションを選択します。一覧と既定値が表示されますので、先ほどメモしたIDを確認し、既定値でよければ空白のまま`Enter`キーを押してください。違うサブスクリプションを使いたい場合は、それを選択してください。
+
 ### 0-5. 必要な権限の確認
 
-ログインしたユーザーが必要な権限を持っているかを確認します。このハンズオンではサブスクリプションに対し、下記3パターンのうち、いずれかのロール割り当てを前提とします。
+ログインしたユーザーが必要な権限を持っているかを確認します。このハンズオンではサブスクリプションに対し、下記3パターンのうち、いずれかのロールが割り当てられていることを前提とします。
 
 - Owner
 - Contributor + User Access Administrator
@@ -69,7 +56,7 @@ az login
 
 TerraformでAKSクラスタ、ACR(Azure Container Registry)、ストレージアカウント、仮想ネットワークなど、ハンズオンで使うAzureリソースを作成します。
 
-以下のコマンドを用いて、環境変数を設定します。
+以下のコマンドで環境変数を設定します。
 
 ```bash
 export ARM_SUBSCRIPTION_ID=$(az account show --query id -o tsv)
@@ -81,9 +68,9 @@ export TF_VAR_resource_group_location="${RESOURCE_GROUP_LOCATION}"
 export TF_VAR_aks_cluster_name="${AKS_CLUSTER_NAME}"
 ```
 
-このハンズオンは環境変数を活用します。Codespacesの停止と再開、ターミナルの作成などを行ったら再度設定してください。
+このハンズオンでは環境変数を活用します。Codespacesの停止と再開、ターミナルの作成などを行ったら、その都度再設定してください。
 
-以下のコマンドを実行します。
+設定値を確認するため、以下のコマンドを実行します。
 
 ```bash
 cat << EOF
@@ -97,7 +84,7 @@ TF_VAR_aks_cluster_name:        ${TF_VAR_aks_cluster_name}
 EOF
 ```
 
-コマンドを実行した結果、以下のように環境変数に各種情報が設定されていることを確認します。
+以下のように各種情報が設定されていることを確認します。
 
 ```
 ARM_SUBSCRIPTION_ID:            <YOUR-SUBSCRIPTION-ID>
@@ -109,14 +96,16 @@ TF_VAR_resource_group_location: japaneast
 TF_VAR_aks_cluster_name:        aks-wakaran
 ```
 
-以下のコマンドで、リソース作成計画が`Plan: 11 to add, 0 to change, 0 to destroy.`と表示されることを確認します。
+以下のコマンドを実行し、Terraformの実行計画を確認します。
 
 ```bash
 cd tffiles
 make plan
 ```
 
-次に、`make apply`コマンドを用いてリソースの作成を実行します。
+`Plan: 11 to add, 0 to change, 0 to destroy.`と表示されることを確認します。
+
+続いて、`make apply`コマンドを用いてリソースの作成を実行します。
 
 ```bash
 make apply
@@ -147,8 +136,9 @@ resource_group_name = "rg-aks-wakaran"
 storage_account_name = "akswakaranc8cfea67"
 ```
 
-作成されたACR(Azure Container Refistry)名、ストレージアカウント名などを確認できます。
-なお、名前をAzureスコープで一意にする必要があるリソースには、サブスクリプションIDとリソースグループ名で作ったハッシュを名前の接尾辞として加えています。先の例では、`acr_name`の以下太字の部分がそれにあたります。
+作成されたACR(Azure Container Refistry)名、ストレージアカウント名などが出力されます。
+
+なお、名前をAzureスコープで一意にする必要があるリソースには、他のハンズオン実施者や既存環境と衝突しないよう、サブスクリプションIDとリソースグループ名で作ったハッシュをTerraformの関数で作成し、名前の接尾辞として加えています。先の例では、`acr_name`の以下太字の部分がそれにあたります。
 
 akswakaran**c8cfea67**
 
@@ -161,25 +151,47 @@ AKSにアクセスするため、kubeconfigを取得します。
 az aks get-credentials --resource-group $RESOURCE_GROUP_NAME --name $AKS_CLUSTER_NAME --admin
 ```
 
+AKSクラスタに接続し、クラスタ情報が取得できるか確認してみましょう。
+
 ```bash
 kubectl cluster-info
 ```
 
-ノード一覧を確認します。
+以下のように表示されます。
+
+```
+Kubernetes control plane is running at https://<YOUR-AKS-API-SERVER>:443
+CoreDNS is running at https://<YOUR-AKS-API-SERVER>:443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+Metrics-server is running at https://<YOUR-AKS-API-SERVER>:443/api/v1/namespaces/kube-system/services/https:metrics-server:/proxy
+
+To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
+```
+
+ノード一の状態も確認します。
 
 ```bash
 kubectl get nodes
 ```
 
+`STATUS`が`Ready`かを確認してください。
+
+```
+NAME                              STATUS   ROLES    AGE    VERSION
+<YOUR-AKS-NODE-PREF>-vmss000000   Ready    <none>   6m     v1.32.4
+<YOUR-AKS-NODE-PREF>-vmss000001   Ready    <none>   6m3s   v1.32.4
+```
+
 ## 3. アプリケーションのデプロイと外部公開
 
-nginx Podをデプロイします。
+それでは、nginx Podをデプロイしてみましょう。
 
 ```bash
 kubectl run nginx --image=nginx -n default
 ```
 
-Serviceを作成し、クラスタの外部に公開します。`scripts`ディレクトリに格納されている`service.yaml`マニフェストファイルを確認します。
+次にServiceを作成し、クラスタの外部からPodにアクセスできるようにします。
+
+`scripts`ディレクトリに`service.yaml`マニフェストファイルがあります。
 
 ```YAML
 apiVersion: v1
@@ -211,7 +223,7 @@ Serviceの状態を確認します。
 kubectl get svc nginx
 ```
 
-EXTERNAL-IPが`PENDING`の場合は、パブリックIPを割り当てている途中です。時間をおいて再度確認してください。
+EXTERNAL-IPが`<pending>`の場合は、パブリックIPを割り当てている途中です。時間をおいて再度確認してください。
 
 ```
 NAME    TYPE           CLUSTER-IP    EXTERNAL-IP     PORT(S)        AGE
@@ -226,7 +238,7 @@ curl <YOUR-IP>
 
 ## 4. ACRに格納したコンテナイメージの利用
 
-Docker Hubからnginxイメージをpullし、ACRにpushします。
+Docker Hubからnginxイメージをpullし、ACRにpushしてみましょう。
 
 まずはACR関連情報を環境変数に設定します。
 
@@ -280,7 +292,7 @@ nginx-from-acr   1/1     Running   0          67s
 
 ## 5. Workload Identity
 
-AKSには[Workload Identity](https://learn.microsoft.com/ja-jp/azure/aks/workload-identity-overview)と呼ばれるしくみがあり、KubernetesのServiceAccountにAzureのマネージドIDとロールを紐づけることで、PodからAzureのサービスにアクセスできます。
+AKSには[Workload Identity](https://learn.microsoft.com/ja-jp/azure/aks/workload-identity-overview)と呼ばれるしくみがあり、KubernetesのServiceAccountにAzureのマネージドIDとロールを紐づけることで、そのServiceAccountを使うPodからAzureのサービスにアクセスできます。
 
 ![alt text](https://learn.microsoft.com/ja-jp/azure/aks/media/workload-identity-overview/workload-id-model.png#lightbox)
 
@@ -358,7 +370,7 @@ spec:
 EOF
 ```
 
-pod-before.yamlというマニフェストファイルが、`scripts`ディレクトリに保存されます。
+`pod-before.yaml`というマニフェストファイルが、`scripts`ディレクトリに保存されます。
 
 ```YAML
 apiVersion: v1
@@ -389,14 +401,14 @@ Podの状態を確認します。
 kubectl get pods pod-before
 ```
 
-`STATUS`が`Error`となっていることを確認します。
+Podは作成、実行されますが、いずれ`STATUS`は`Error`になります。
 
 ```
 NAME         READY   STATUS   RESTARTS   AGE
 pod-before   0/1     Error    0          18s
 ```
 
-以下のコマンドで`Pod`のログを確認します。
+以下のコマンドでPodのログを確認します。
 
 ```bash
 kubectl logs pod-before
@@ -405,6 +417,7 @@ kubectl logs pod-before
 次のメッセージが表示されるはずです。
 
 ```
+...
 ERROR: Please run 'az login' to setup account.
 ```
 
@@ -416,9 +429,9 @@ AKS作成時にWorkload Identityは使えるように設定してあります。
 
 まずはじめに、ユーザー割り当てマネージドIDについて説明します。マネージドIDは、Azureで非人間に対して割り当てられるIDです。たとえば仮想マシンなどのAzureリソースに割り当て可能です。ユーザー割り当てとシステム割り当て、2種類のマネージドIDがありますが、このハンズオンではユーザー割り当てを使います。
 
-参考: [Azure リソースのマネージド ID](https://learn.microsoft.com/ja-jp/entra/identity/managed-identities-azure-resources/overview)
+> 参考: [Azure リソースのマネージド ID](https://learn.microsoft.com/ja-jp/entra/identity/managed-identities-azure-resources/overview)
 
-以降の作業を理解の上進められるよう、流れをまとめておきます。
+以降の作業を理解のうえ進められるよう、流れをまとめておきます。
 
 - ユーザー割り当てマネージドIDを作る
 - ユーザー割り当てマネージドIDにBlobを閲覧できるロールを割り当てる
@@ -442,7 +455,7 @@ az identity create \
 
 次に、ユーザー割り当てマネージドIDにストレージBlob閲覧者ロールを割り当てます。
 
-まずはユーザー割り当てマネージドIDのプリンシパルIDを取得します。プリンシパルIDとは、AzureがID管理サービスとして使っているEntra IDテナント内で、オブジェクトを識別するための値です。ロールを割り当てはプリンシパルIDに対して行うため、取得しておきます。
+まずはユーザー割り当てマネージドIDのプリンシパルIDを取得します。プリンシパルIDとは、AzureがID管理サービスとして使っているEntra IDテナント内で、オブジェクトを識別するための値です。ロールの割り当てはプリンシパルIDに対して行うため、後続の作業に必要です。
 
 ```bash
 export IDENTITY_PRINCIPAL_ID=$(az identity show \
@@ -478,7 +491,7 @@ export USER_ASSIGNED_CLIENT_ID="$(az identity show \
     --output tsv)"
 ```
 
-Kubernetesでの作業に移ります。ServiceAccountに必要な情報を環境変数に設定します。
+Kubernetesの作業に移ります。ServiceAccountに必要な情報を環境変数に設定します。
 
 ```bash
 export SERVICE_ACCOUNT_NAMESPACE="default"
@@ -607,15 +620,18 @@ kubectl logs pod-after
 Blobコンテナを参照できたことを確認します。
 
 ```
+...
 Name      Blob Type    Blob Tier    Length    Content Type    Last Modified              Snapshot
 --------  -----------  -----------  --------  --------------  -------------------------  ----------
 test.txt  BlockBlob    Hot                    text/plain      2025-06-03T05:46:05+00:00
-...
+```
+
+以上でハンズオンは終わりです。お疲れ様でした。
 
 ## 6. クリーンアップ
 
 ```bash
-cd tffiles
+cd ../tffiles
 make destroy
 ```
 
@@ -624,8 +640,10 @@ make destroy
 なお、このハンズオンで作成したAzureリソースにはタグ`Project=aks-wakaran`をつけてあります。以下のコマンドで、削除できたか確認してください。
 
 ```bash
-az resource list --tag Project=aks-wakaran
+az resource list --tag Project=aks-wakaran -o table
 ```
+
+削除作業直後はキャッシュされた値が返ってくることがありますが、数秒待てば結果が空になります。
 
 > [!NOTE]
 > `make destroy`が失敗してしまったり、Codespaceを消してしまったり、などの理由で強制的にハンズオンリソースを削除したい場合は、Azureポータルでリソースグループを消してください。
