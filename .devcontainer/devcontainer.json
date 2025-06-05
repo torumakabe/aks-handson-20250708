@@ -1,0 +1,21 @@
+{
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": "true",
+      "username": "vscode",
+      "upgradePackages": "true"
+    },
+    "ghcr.io/devcontainers/features/terraform:1": {
+      "version": "1.12"
+    },
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+    "ghcr.io/devcontainers/features/azure-cli:1": {
+      "version": "2.73"
+    },
+    "ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {
+      "version": "1.32"
+    }
+  },
+  "remoteUser": "vscode"
+}

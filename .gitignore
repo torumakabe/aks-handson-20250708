@@ -1,0 +1,9 @@
+.terraform
+dev.tfvars
+terraform.tfstate
+terraform.tfstate.backup
+
+test.txt
+pod-before.yaml
+pod-after.yaml
+serviceaccount.yaml
