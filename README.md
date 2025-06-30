@@ -217,20 +217,20 @@ spec:
 kubectl apply -f ../scripts/service.yaml
 ```
 
-Serviceの状態を確認します。
+Serviceの状態を確認します。-wオプションをつけると、リソースの状態が変化するたびに表示されます。
 
 ```bash
-kubectl get svc nginx
+kubectl get svc nginx -w
 ```
 
-EXTERNAL-IPが`<pending>`の場合は、パブリックIPを割り当てている途中です。時間をおいて再度確認してください。
+EXTERNAL-IPが`<pending>`の場合は、パブリックIPを割り当てている途中です。時間が経つと、以下のようにEXTERNAL-IPが割り当てられます。
 
 ```
 NAME    TYPE           CLUSTER-IP    EXTERNAL-IP     PORT(S)        AGE
 nginx   LoadBalancer   10.0.43.185   <YOUR-IP>       80:30742/TCP   32s
 ```
 
-nginx Podにアクセスできるか、curlで確認しましょう。
+Ctrl + Cで先ほどのコマンドを中断し、nginx Podにアクセスできるか、curlで確認しましょう。
 
 ```bash
 curl <YOUR-IP>
@@ -395,10 +395,10 @@ spec:
 kubectl apply -f pod-before.yaml
 ```
 
-Podの状態を確認します。
+Podの状態を確認します。このコマンドも-wオプションをつけているため、リソースの状態が変化するたびに表示されます。
 
 ```bash
-kubectl get pods pod-before
+kubectl get pods pod-before -w
 ```
 
 Podは作成、実行されますが、いずれ`STATUS`は`Error`になります。
@@ -408,7 +408,7 @@ NAME         READY   STATUS   RESTARTS   AGE
 pod-before   0/1     Error    0          18s
 ```
 
-以下のコマンドでPodのログを確認します。
+Ctrl + Cで先ほどのコマンドを中断し、以下のコマンドでPodのログを確認します。
 
 ```bash
 kubectl logs pod-before
