@@ -552,9 +552,9 @@ metadata:
   name: pod-after
   namespace: default
   labels:
-    azure.workload.identity/use: "true"
+    azure.workload.identity/use: "true" # Workload Identity を有効化するためのラベル
 spec:
-  serviceAccountName: ${SERVICE_ACCOUNT_NAME}
+  serviceAccountName: ${SERVICE_ACCOUNT_NAME} # Pod が使用する ServiceAccount 名を指定
   containers:
     - name: azcli
       image: mcr.microsoft.com/azure-cli:azurelinux3.0
@@ -576,9 +576,9 @@ metadata:
   name: pod-after
   namespace: default
   labels:
-    azure.workload.identity/use: "true"
+    azure.workload.identity/use: "true" # Workload Identity を有効化するためのラベル
 spec:
-  serviceAccountName: workload-identity-sa-aks-wakaran
+  serviceAccountName: workload-identity-sa-aks-wakaran # Pod が使用する ServiceAccount 名を指定
   containers:
     - name: azcli
       image: mcr.microsoft.com/azure-cli:azurelinux3.0
